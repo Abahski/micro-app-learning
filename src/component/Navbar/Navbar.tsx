@@ -21,8 +21,7 @@ export default function Navbar() {
         <li> | </li>
         <li>Voting</li>
         <button onClick={handleClick}
-          onClick={handleClick}
-            className={`${
+                      className={`${
               isLogin ? "rounded-full bg-white text-black font-bold px-3 py-1" : 'bg-white text-black px-5 py-1 rounded-md font-bold'
             } `}
           >
