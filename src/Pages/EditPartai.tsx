@@ -2,13 +2,13 @@ import Navbar from '../component/Fragments/Navbar.tsx'
 import Input from '../component/Elements/Input/Input.tsx'
 import Button from '../component/Elements/Button/Button.tsx'
 import Label from '../component/Elements/Label/Label.tsx'
-import { ChangeEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 
 
-const AddPartai = () => {
-    const [partyRegister, setPartyRegister] = useState({
+const EditPartai = () => {
+    const [party, setParty] = useState({
         name: "",
         leader_name: "",
         address: "",
@@ -17,11 +17,12 @@ const AddPartai = () => {
     })
 
     const navigate = useNavigate();
+    const { id } = useParams();
 
-    const saveParty = async (e: React.FormEvent<HTMLFormElement>) => {
+    const updateParty = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/v1/partai", partyRegister);
+      await axios.put(`http://localhost:5000/api/v1/partai/${id}`, party);
 
       navigate("/partai");
     } catch (error) {
@@ -30,12 +31,24 @@ const AddPartai = () => {
   };
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setPartyRegister({
-      ...partyRegister,
+    setParty({
+      ...party,
       [e.target.name]: e.target.value,
     });
   };
 
+  const getPartyById = async() => {
+    try {
+        const { data } = await axios.get(`http://localhost:5000/api/v1/partai/${id}`)
+        setParty(data)
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getPartyById();
+  }, [])
 
 
     return (
@@ -58,7 +71,7 @@ const AddPartai = () => {
                         </div>
                     
                         <div className="w-[500px]">
-                            <form onSubmit={saveParty}>
+                            <form onSubmit={updateParty}>
                                 <div className="flex flex-col gap-[20px] mb-[50px]">
                                     <label className="block">
                                         <Label text="Nama" />
@@ -124,4 +137,4 @@ const AddPartai = () => {
     )
 }
 
-export default AddPartai;
+export default EditPartai;
